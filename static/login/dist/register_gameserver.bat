@@ -1,3 +1,3 @@
 @echo off
 
-java -cp ../libs/*;./login.jar  ru.catssoftware.gsregistering.GameServerRegister
+java -cp ../libs/*;./login.jar  ru.jesus.login.gsregistering.GameServerRegister

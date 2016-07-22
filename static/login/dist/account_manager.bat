@@ -8,5 +8,5 @@ REM # If you're not a x64 system user just leave                           #
 REM ########################################################################
 REM set PATH="type here your path to java jdk/jre (including bin folder)"
 
-@java -cp ../libs/*;./login.jar  -Djava.util.logging.config.file=console.cfg ru.catssoftware.accountmanager.AccountManager
+@java -cp ../libs/*;./login.jar  -Djava.util.logging.config.file=console.cfg ru.jesus.login.accountmanager.AccountManager
 
