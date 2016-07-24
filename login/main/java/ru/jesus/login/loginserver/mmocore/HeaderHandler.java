@@ -1,11 +1,15 @@
 package ru.jesus.login.loginserver.mmocore;
 
+/**
+ * @version 2.0
+ * @author JesusXD
+ * */
 abstract class HeaderHandler<T extends MMOConnection<T>, H extends HeaderHandler<T, H>>
 {
 	private final H _subHeaderHandler;
+	private final HeaderInfo<T> _headerInfoReturn = new HeaderInfo<T>();
 
-	HeaderHandler(H subHeaderHandler)
-	{
+	HeaderHandler(H subHeaderHandler) {
 		_subHeaderHandler = subHeaderHandler;
 	}
 
@@ -18,8 +22,6 @@ abstract class HeaderHandler<T extends MMOConnection<T>, H extends HeaderHandler
 	{
 		return getSubHeaderHandler() == null;
 	}
-
-	private final HeaderInfo<T> _headerInfoReturn = new HeaderInfo<T>();
 
 	protected final HeaderInfo<T> getHeaderInfoReturn()
 	{

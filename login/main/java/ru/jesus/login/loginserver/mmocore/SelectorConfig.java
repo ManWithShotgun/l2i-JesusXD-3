@@ -94,7 +94,7 @@ public final class SelectorConfig<T extends MMOConnection<T>>
 	/**
 	 * Server will try to send maxSendPerPass packets per socket write call however it may send less if the write buffer was filled before achieving this value.
 	 * 
-	 * @param The maximum number of packets to be sent on a single socket write call
+	 * @param maxSendPerPass maximum number of packets to be sent on a single socket write call
 	 */
 	public void setMaxSendPerPass(int maxSendPerPass)
 	{

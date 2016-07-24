@@ -8,8 +8,7 @@ import java.nio.channels.WritableByteChannel;
 
 import javolution.util.FastList;
 
-public abstract class MMOConnection<T extends MMOConnection<T>>
-{
+public abstract class MMOConnection<T extends MMOConnection<T>> {
 	private final SelectorThread<T> _selectorThread;
 	private final ISocket _socket;
 
@@ -23,25 +22,21 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 
 	private long _timeClosed = -1;
 
-	protected MMOConnection(SelectorThread<T> selectorThread, ISocket socket, SelectionKey key)
-	{
+	protected MMOConnection(SelectorThread<T> selectorThread, ISocket socket, SelectionKey key) {
 		_selectorThread = selectorThread;
 		_socket = socket;
 		_selectionKey = key;
 	}
 
-	public synchronized void sendPacket(SendablePacket<T> sp)
-	{
+	public synchronized void sendPacket(SendablePacket<T> sp) {
 		if (isClosed())
 			return;
 
-		try
-		{
+		try {
 			getSelectionKey().interestOps(getSelectionKey().interestOps() | SelectionKey.OP_WRITE);
 			getSendQueue2().addLast(sp);
-		}
-		catch (CancelledKeyException e)
-		{
+		} catch (CancelledKeyException e) {
+			//???
 		}
 	}
 
@@ -55,47 +50,35 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 		return _selectionKey;
 	}
 
-	void enableReadInterest()
-	{
-		try
-		{
+	void enableReadInterest() {
+		try {
 			getSelectionKey().interestOps(getSelectionKey().interestOps() | SelectionKey.OP_READ);
-		}
-		catch (CancelledKeyException e)
-		{
+		} catch (CancelledKeyException e) {
+			//???
 		}
 	}
 
-	void disableReadInterest()
-	{
-		try
-		{
+	void disableReadInterest() {
+		try {
 			getSelectionKey().interestOps(getSelectionKey().interestOps() & ~SelectionKey.OP_READ);
-		}
-		catch (CancelledKeyException e)
-		{
+		} catch (CancelledKeyException e) {
+			//???
 		}
 	}
 
-	void enableWriteInterest()
-	{
-		try
-		{
+	void enableWriteInterest() {
+		try {
 			getSelectionKey().interestOps(getSelectionKey().interestOps() | SelectionKey.OP_WRITE);
-		}
-		catch (CancelledKeyException e)
-		{
+		} catch (CancelledKeyException e) {
+			//???
 		}
 	}
 
-	void disableWriteInterest()
-	{
-		try
-		{
+	void disableWriteInterest() {
+		try {
 			getSelectionKey().interestOps(getSelectionKey().interestOps() & ~SelectionKey.OP_WRITE);
-		}
-		catch (CancelledKeyException e)
-		{
+		} catch (CancelledKeyException e) {
+			//???
 		}
 	}
 
@@ -114,23 +97,18 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 		return _socket.getReadableByteChannel();
 	}
 
-	synchronized FastList<SendablePacket<T>> getSendQueue2()
-	{
+	synchronized FastList<SendablePacket<T>> getSendQueue2() {
 		if (_sendQueue == null)
 			_sendQueue = new FastList<SendablePacket<T>>();
 
 		return _sendQueue;
 	}
 
-	void createWriteBuffer(ByteBuffer buf)
-	{
-		if (_primaryWriteBuffer == null)
-		{
+	void createWriteBuffer(ByteBuffer buf) {
+		if (_primaryWriteBuffer == null) {
 			_primaryWriteBuffer = getSelectorThread().getPooledBuffer();
 			_primaryWriteBuffer.put(buf);
-		}
-		else
-		{
+		} else {
 			ByteBuffer temp = getSelectorThread().getPooledBuffer();
 			temp.put(buf);
 
@@ -138,14 +116,11 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 			_primaryWriteBuffer.flip();
 			int limit = _primaryWriteBuffer.limit();
 
-			if (remaining >= _primaryWriteBuffer.remaining())
-			{
+			if (remaining >= _primaryWriteBuffer.remaining()) {
 				temp.put(_primaryWriteBuffer);
 				getSelectorThread().recycleBuffer(_primaryWriteBuffer);
 				_primaryWriteBuffer = temp;
-			}
-			else
-			{
+			} else {
 				_primaryWriteBuffer.limit(remaining);
 				temp.put(_primaryWriteBuffer);
 				_primaryWriteBuffer.limit(limit);
@@ -161,8 +136,7 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 		return _primaryWriteBuffer != null;
 	}
 
-	void movePendingWriteBufferTo(ByteBuffer dest)
-	{
+	void movePendingWriteBufferTo(ByteBuffer dest) {
 		_primaryWriteBuffer.flip();
 		dest.put(_primaryWriteBuffer);
 		getSelectorThread().recycleBuffer(_primaryWriteBuffer);
@@ -191,8 +165,7 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 	}
 	
 
-	public synchronized void closeNow()
-	{
+	public synchronized void closeNow() {
 		if (isClosed())
 			return;
 
@@ -202,8 +175,7 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 		getSelectorThread().closeConnection(this);
 	}
 
-	public synchronized void close(SendablePacket<T> sp)
-	{
+	public synchronized void close(SendablePacket<T> sp) {
 		if (isClosed())
 			return;
 
@@ -213,21 +185,17 @@ public abstract class MMOConnection<T extends MMOConnection<T>>
 		getSelectorThread().closeConnection(this);
 	}
 
-	void releaseBuffers()
-	{
-		if (_primaryWriteBuffer != null)
-		{
+	void releaseBuffers() {
+		if (_primaryWriteBuffer != null) {
 			getSelectorThread().recycleBuffer(_primaryWriteBuffer);
 			_primaryWriteBuffer = null;
-			if (_secondaryWriteBuffer != null)
-			{
+			if (_secondaryWriteBuffer != null) {
 				getSelectorThread().recycleBuffer(_secondaryWriteBuffer);
 				_secondaryWriteBuffer = null;
 			}
 		}
 
-		if (_readBuffer != null)
-		{
+		if (_readBuffer != null) {
 			getSelectorThread().recycleBuffer(_readBuffer);
 			_readBuffer = null;
 		}

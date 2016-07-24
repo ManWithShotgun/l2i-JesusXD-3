@@ -148,12 +148,9 @@ public class L2LoginServer {
 	}
 
 	private void startServer() {
-		try
-		{
+		try {
 			_selectorThread.openServerSocket(InetAddress.getByName(Config.LOGIN_SERVER_HOSTNAME), Config.LOGIN_SERVER_PORT);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			_log.fatal("FATAL: Failed to open server socket. Reason: " + e.getMessage(), e);
 			System.exit(1);
 		}

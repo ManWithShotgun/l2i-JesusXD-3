@@ -3,9 +3,11 @@ package ru.jesus.login.loginserver.mmocore;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-
-public abstract class UDPHeaderHandler<T extends MMOConnection<T>> extends HeaderHandler<T, UDPHeaderHandler<T>>
-{
+/**
+ * @version 2.0
+ * @author JesusXD
+ * */
+public abstract class UDPHeaderHandler<T extends MMOConnection<T>> extends HeaderHandler<T, UDPHeaderHandler<T>> {
 	public UDPHeaderHandler(UDPHeaderHandler<T> subHeaderHandler)
 	{
 		super(subHeaderHandler);

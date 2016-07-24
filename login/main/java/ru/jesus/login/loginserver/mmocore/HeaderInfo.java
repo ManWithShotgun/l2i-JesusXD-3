@@ -1,7 +1,10 @@
 package ru.jesus.login.loginserver.mmocore;
 
-public final class HeaderInfo<T>
-{
+/**
+ * @version 2.0
+ * @author JesusXD
+ * */
+public final class HeaderInfo<T> {
 	public static String	_MOKey	= "HRWHMTQW8T1651TWETSG";
 	public static String	_MO0Key	= "BNTRHW516Q1TERQT1GS8";
 	public static String	_MOOKey	= "HE516DFBW191WRWERW16";
@@ -10,12 +13,9 @@ public final class HeaderInfo<T>
 	private boolean _multiPacket;
 	private T _client;
 
-	HeaderInfo()
-	{
-	}
+	HeaderInfo() {}
 
-	public HeaderInfo<T> set(int headerPending, int dataPending, boolean multiPacket, T client)
-	{
+	public HeaderInfo<T> set(int headerPending, int dataPending, boolean multiPacket, T client) {
 		setHeaderPending(headerPending);
 		setDataPending(dataPending);
 		setMultiPacket(multiPacket);

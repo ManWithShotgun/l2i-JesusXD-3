@@ -20,13 +20,11 @@ import ru.jesus.login.loginserver.mmocore.ReceivablePacket;
 /**
  * Handler for packets received by Login Server
  *
- * @author  KenM
+ * @version 2.0
+ * @author  KenM, JesusXD
  */
-public final class L2LoginPacketHandler implements IPacketHandler<L2LoginClient>
-{
-	/**
-	 * @see com.l2jserver.mmocore.network.IPacketHandler#handlePacket(java.nio.ByteBuffer, com.l2jserver.mmocore.interfaces.MMOClient)
-	 */
+public final class L2LoginPacketHandler implements IPacketHandler<L2LoginClient> {
+
 	private static L2LoginPacketHandler _instance;
 	private Map<L2LoginClient, Long> _connections = new FastMap<L2LoginClient, Long>();
 
@@ -56,68 +54,51 @@ public final class L2LoginPacketHandler implements IPacketHandler<L2LoginClient>
 	public static L2LoginPacketHandler getInstance() {
 		return _instance;
 	}
+
 	public void addClient(L2LoginClient cl) {
 		synchronized (_connections) {
 			_connections.put(cl, System.currentTimeMillis());
 		}
 	}
-	public ReceivablePacket<L2LoginClient> handlePacket(ByteBuffer buf, L2LoginClient client)
-	{
+
+	public ReceivablePacket<L2LoginClient> handlePacket(ByteBuffer buf, L2LoginClient client) {
 		int opcode = buf.get() & 0xFF;
 		ReceivablePacket<L2LoginClient> packet = null;
 		LoginClientState state = client.getState();
-		switch (state)
-		{
+		switch (state) {
 			case CONNECTED:
-				if (opcode == 0x07)
-				{
+				if (opcode == 0x07) {
 					packet = new AuthGameGuard();
-				}
-				else
-				{
+				} else {
 					this.debugOpcode(opcode, state);
 					client.close(LoginFailReason.REASON_ACCESS_FAILED);
 				}
 				break;
 			case AUTHED_GG:
-				if (opcode == 0x00)
-				{
+				if (opcode == 0x00) {
 					packet = new RequestAuthLogin();
-				}
-				else if (opcode == 0x06)
-				{
+				} else if (opcode == 0x06) {
 					packet = new SendCardCode();
-				}
-				else
-				{
+				} else {
 					if(client.getAccount()!=null)
 						this.debugOpcode(opcode, state);
 					client.close(LoginFailReason.REASON_ACCESS_FAILED);
 				}
 				break;
 			case AUTHED_CARD:
-				if (opcode == 0x06)
-				{
+				if (opcode == 0x06) {
 					packet = new SendCardCode();
 				}
 				break;
 			case AUTHED_LOGIN:
-				if (opcode == 0x06)
-				{
+				if (opcode == 0x06) {
 					client.setState(LoginClientState.AUTHED_CARD);
 					packet = new RequestServerList();
-				}
-				
-				else if (opcode == 0x05)
-				{
+				} else if (opcode == 0x05) {
 					packet = new RequestServerList();
-				}
-				else if (opcode == 0x02)
-				{
+				} else if (opcode == 0x02) {
 					packet = new RequestServerLogin();
-				}
-				else
-				{
+				} else {
 					this.debugOpcode(opcode, state);
 				}
 				break;
