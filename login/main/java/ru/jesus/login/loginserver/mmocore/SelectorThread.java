@@ -350,6 +350,7 @@ public final class SelectorThread<T extends MMOConnection<T>> extends Thread {
 	}
 
 	private boolean tryReadPacket2(SelectionKey key, T con, ByteBuffer buf) {
+		_log.debug("read pac2");
 		if (buf.hasRemaining()) {
 			TCPHeaderHandler<T> handler = _tcpHeaderHandler;
 			// parse all jeaders
@@ -668,6 +669,7 @@ public final class SelectorThread<T extends MMOConnection<T>> extends Thread {
 	}
 
 	private void closeConnectionImpl(MMOConnection<T> con, boolean forced) {
+		_log.debug("close con");
 		try {
 			if (forced)
 				con.onForcedDisconnection();
